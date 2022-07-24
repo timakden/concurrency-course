@@ -3,7 +3,6 @@ package course.concurrency.m2_async.min_price;
 import course.concurrency.m2_async.cf.min_price.PriceAggregator;
 import course.concurrency.m2_async.cf.min_price.PriceRetriever;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,12 +39,11 @@ public class PriceAggregatorTests {
     }
 
     @Test
-    @Disabled
     @DisplayName("Every shop responds")
     public void shouldReturnMin() {
         int shopCount = 50;
         PriceRetriever priceRetriever = mock(PriceRetriever.class);
-        List<Double> prices = IntStream.range(0, shopCount-1).boxed()
+        List<Double> prices = IntStream.range(0, shopCount - 1).boxed()
                 .map(i -> ThreadLocalRandom.current().nextDouble())
                 .collect(toList());
         when(priceRetriever.getPrice(anyLong(), anyLong())).thenReturn(ThreadLocalRandom.current().nextDouble(),
@@ -64,7 +62,6 @@ public class PriceAggregatorTests {
     }
 
     @Test
-    @Disabled
     @DisplayName("No one responds")
     public void shouldReturnDefault() {
         PriceRetriever priceRetriever = mock(PriceRetriever.class);
@@ -84,7 +81,6 @@ public class PriceAggregatorTests {
     }
 
     @Test
-    @Disabled
     @DisplayName("Not everyone responds")
     public void shouldReturnMinWithIncomplete() {
         int shopCount = 50;
@@ -126,7 +122,6 @@ public class PriceAggregatorTests {
     }
 
     @Test
-    @Disabled
     @DisplayName("Some shops respond with exception")
     public void shouldReturnMinWithException() {
         int shopCount = 50;
@@ -164,14 +159,13 @@ public class PriceAggregatorTests {
     }
 
     @Test
-    @Disabled
     @DisplayName("Min price from last shop")
     public void shouldReturnMinFromLast() {
         int shopCount = 10;
-        List<Long> shopIds = LongStream.range(0, shopCount-1).boxed().collect(toList());
+        List<Long> shopIds = LongStream.range(0, shopCount - 1).boxed().collect(toList());
         priceAggregator.setShops(shopIds);
 
-        Double[] prices = shopIds.stream().map(id -> 300-Double.valueOf(id)).toArray(Double[]::new);
+        Double[] prices = shopIds.stream().map(id -> 300 - Double.valueOf(id)).toArray(Double[]::new);
 
         PriceRetriever priceRetriever = mock(PriceRetriever.class);
         when(priceRetriever.getPrice(anyLong(), anyLong())).thenReturn(301d, prices);
