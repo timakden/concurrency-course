@@ -19,5 +19,6 @@ public class Notifier {
     }
 
     public void shutdown() {
+        executorService.shutdown();
     }
 }

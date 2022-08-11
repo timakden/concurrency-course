@@ -15,14 +15,16 @@ public class AuctionStoppablePessimistic implements AuctionStoppable {
 
     public boolean propose(Bid bid) {
         if (!stopped && bid.price > latestBid.price) {
-            lock.lock();
-            if (!stopped && bid.price > latestBid.price) {
-                notifier.sendOutdatedMessage(latestBid);
-                latestBid = bid;
+            try {
+                lock.lock();
+                if (!stopped && bid.price > latestBid.price) {
+                    notifier.sendOutdatedMessage(latestBid);
+                    latestBid = bid;
+                    return true;
+                }
+            } finally {
                 lock.unlock();
-                return true;
             }
-            lock.unlock();
         }
         return false;
     }
@@ -32,9 +34,7 @@ public class AuctionStoppablePessimistic implements AuctionStoppable {
     }
 
     public Bid stopAuction() {
-        lock.lock();
         stopped = true;
-        lock.unlock();
         return latestBid;
     }
 }
